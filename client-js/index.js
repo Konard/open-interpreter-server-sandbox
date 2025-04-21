@@ -5,7 +5,7 @@ dotenv.config();
 const SERVER_URL = process.env.SERVER_URL || 'http://localhost:8000';
 
 async function* chatStream(message) {
-  const res = await fetch(\`\${SERVER_URL}/chat?message=\${encodeURIComponent(message)}\`);
+  const res = await fetch(`${SERVER_URL}/chat?message=${encodeURIComponent(message)}`);
   if (!res.ok) throw new Error(await res.text());
 
   const reader = res.body.getReader();
