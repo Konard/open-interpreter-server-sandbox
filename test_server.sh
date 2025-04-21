@@ -1,10 +1,8 @@
 #!/bin/bash
 
-# filepath: /Users/konard/Code/konard/open-interpreter-server-sandbox/test_server.sh
-
 # Start the FastAPI server in the background
 echo "Starting the FastAPI server..."
-uvicorn server.server:app --host 127.0.0.1 --port 8000 &
+python3 -m uvicorn server.server:app --host 127.0.0.1 --port 8000 &
 SERVER_PID=$!
 
 # Wait for the server to start
