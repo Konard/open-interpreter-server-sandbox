@@ -8,6 +8,12 @@ else
   exit 1
 fi
 
+# Debug: Print loaded environment variables
+echo "Loaded environment variables:"
+echo "OPENAI_BASE_URL=${OPENAI_BASE_URL}"
+echo "OPENAI_API_KEY=${OPENAI_API_KEY}"
+echo "DEFAULT_MODEL=${DEFAULT_MODEL}"
+
 # Build the Docker image
 echo "Building the Docker image..."
 ./server/build-docker.sh
