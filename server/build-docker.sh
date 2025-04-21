@@ -1,8 +1,10 @@
 #!/bin/bash
-# filepath: /Users/konard/Code/konard/open-interpreter-server-sandbox/server/build-docker.sh
 
 # Set the image name
 IMAGE_NAME="open-interpreter-server"
+
+# Navigate to the directory containing the Dockerfile
+cd "$(dirname "$0")"
 
 # Build the Docker image
 docker build -t $IMAGE_NAME .
