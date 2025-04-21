@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Install necessary Python dependencies
+echo "Installing Python dependencies..."
+pip install -r requirements.txt || pip install fastapi uvicorn
+
+# Install necessary Node.js dependencies
+echo "Installing Node.js dependencies..."
+npm install node-fetch dotenv || npm install
+
 # Start the FastAPI server in the background
 echo "Starting the FastAPI server..."
 python3 -m uvicorn server.server:app --host 127.0.0.1 --port 8000 &
