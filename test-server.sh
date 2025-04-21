@@ -1,18 +1,13 @@
 #!/bin/bash
 
-# Install necessary Python dependencies
-echo "Installing Python dependencies..."
-pip install --upgrade pip
-pip install -r requirements.txt || pip install fastapi uvicorn interpreter
+# Build the Docker image
+echo "Building the Docker image..."
+./server/build-docker.sh
 
-# Install necessary Node.js dependencies
-echo "Installing Node.js dependencies..."
-npm install node-fetch dotenv || npm install
-
-# Start the FastAPI server in the background
-echo "Starting the FastAPI server..."
-python3 -m uvicorn server.server:app --host 127.0.0.1 --port 8000 &
-SERVER_PID=$!
+# Run the Docker container
+echo "Starting the Docker container..."
+docker run -d --name open-interpreter-server -p 8000:8000 open-interpreter-server
+CONTAINER_ID=$(docker ps -qf "name=open-interpreter-server")
 
 # Wait for the server to start
 sleep 3
@@ -25,7 +20,8 @@ if [[ $CHAT_RESPONSE == *"data:"* ]]; then
   echo "Chat endpoint is working!"
 else
   echo "Chat endpoint test failed!"
-  kill $SERVER_PID
+  docker stop $CONTAINER_ID
+  docker rm $CONTAINER_ID
   exit 1
 fi
 
@@ -52,7 +48,8 @@ JS_EXIT_CODE=$?
 
 # Clean up
 rm test_client.js
-kill $SERVER_PID
+docker stop $CONTAINER_ID
+docker rm $CONTAINER_ID
 
 if [[ $JS_EXIT_CODE -eq 0 ]]; then
   echo "History endpoint is working!"
