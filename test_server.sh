@@ -2,7 +2,8 @@
 
 # Install necessary Python dependencies
 echo "Installing Python dependencies..."
-pip install -r requirements.txt || pip install fastapi uvicorn
+pip install --upgrade pip
+pip install -r requirements.txt || pip install fastapi uvicorn interpreter
 
 # Install necessary Node.js dependencies
 echo "Installing Node.js dependencies..."
