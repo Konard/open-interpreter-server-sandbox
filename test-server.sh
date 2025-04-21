@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Load environment variables from .env file
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+else
+  echo ".env file not found. Exiting."
+  exit 1
+fi
+
 # Build the Docker image
 echo "Building the Docker image..."
 ./server/build-docker.sh
@@ -12,9 +20,13 @@ if [ -n "$EXISTING_CONTAINER" ]; then
   docker rm $EXISTING_CONTAINER
 fi
 
-# Run the Docker container
+# Run the Docker container with environment variables from .env
 echo "Starting the Docker container..."
-docker run -d --name open-interpreter-server -p 8000:8000 open-interpreter-server
+docker run -d --name open-interpreter-server -p 8000:8000 \
+  -e OPENAI_BASE_URL="${OPENAI_BASE_URL:-}" \
+  -e OPENAI_API_KEY="${OPENAI_API_KEY:-}" \
+  -e DEFAULT_MODEL="${DEFAULT_MODEL:-}" \
+  open-interpreter-server
 CONTAINER_ID=$(docker ps -qf "name=open-interpreter-server")
 
 # Wait for the server to start
@@ -28,8 +40,9 @@ if [[ $CHAT_RESPONSE == *"data:"* ]]; then
   echo "Chat endpoint is working!"
 else
   echo "Chat endpoint test failed!"
-  # docker stop $CONTAINER_ID
-  # docker rm $CONTAINER_ID
+  docker logs open-interpreter-server
+  docker stop $CONTAINER_ID
+  docker rm $CONTAINER_ID
   exit 1
 fi
 
